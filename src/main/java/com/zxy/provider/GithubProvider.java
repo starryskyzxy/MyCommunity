@@ -42,10 +42,12 @@ public class GithubProvider {
         try {
             Response response = client.newCall(request).execute();
             String string = response.body().string();
+            System.out.println("得到的json字符串为："+string);
             GithubUser githubUser = JSON.parseObject(string, GithubUser.class);
             return githubUser;
         } catch (IOException e) {
             //不常遇见所以省略
+            e.printStackTrace();
         }
         return null;
     }

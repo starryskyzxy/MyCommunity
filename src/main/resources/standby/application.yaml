@@ -1,0 +1,21 @@
+
+#GitHub第三方登录
+github:
+  clientId: 3bd0936bdd7a8d28efa2
+  clientSecret: d63b3f5465d7a5f6e2f539bbc5f3ebad014fa4b6
+  redirect:
+  redirectUri: http://localhost:8080/callback
+
+#数据库配置.
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ssmbuild?userUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+#整合mybatis
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  type-aliases-package: com.zxy.model

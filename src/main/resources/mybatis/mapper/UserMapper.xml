@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxy.mapper.UserMapper">
+    <cache/>
+
+    <insert id="insert" parameterType="com.zxy.model.User">
+      insert into community.user (account_id, name, token, gmt_creat, gmt_modified)
+       values (#{accountId},#{name},#{token},#{gmtCreate},#{gmtModified})
+    </insert>
+</mapper>
