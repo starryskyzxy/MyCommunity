@@ -9,4 +9,8 @@
       insert into community.user (account_id, name, token, gmt_creat, gmt_modified)
        values (#{accountId},#{name},#{token},#{gmtCreate},#{gmtModified})
     </insert>
+
+    <select id="findByToken" resultType="com.zxy.model.User">
+        select * from community.user where token = #{token}
+    </select>
 </mapper>

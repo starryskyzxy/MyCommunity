@@ -7,13 +7,12 @@ import com.zxy.model.User;
 import com.zxy.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Controller
@@ -37,7 +36,7 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callback(@RequestParam("code")String code,
                            @RequestParam("state")String state,
-                           HttpServletRequest request){
+                           HttpServletResponse response){
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setCode(code);
@@ -50,14 +49,18 @@ public class AuthorizeController {
         if (githubUser != null){
             User user = new User();
             //将数据库中的user的token设置为uuid
-            user.setToken(UUID.randomUUID().toString());
+            String token = UUID.randomUUID().toString();
+            user.setToken(token);
             user.setName(githubUser.getName());
+            //以字符串形式存储账户id，因为以后可能要
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
+            //将user信息插入到数据库
             userMapper.insert(user);
             //登录成功，写cookie 和 session
-            request.getSession().setAttribute("githubUser",githubUser);
+            response.addCookie(new Cookie("token",token));
+            //request.getSession().setAttribute("githubUser",githubUser);
             return "redirect:/index";
         }else {
             //登录失败，重新登录
