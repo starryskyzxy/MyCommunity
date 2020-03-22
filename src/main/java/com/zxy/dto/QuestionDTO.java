@@ -1,5 +1,7 @@
 package com.zxy.dto;
 
+import com.zxy.model.Question;
+import com.zxy.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,13 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GithubUser {
+public class QuestionDTO {
 
-    private String name;
-    private Long id;
-    private String bio;
-    private String avatarUrl;
+    private Question question;
+    private User user;
 
 }
-
-

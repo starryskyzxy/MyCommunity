@@ -46,20 +46,23 @@ public class AuthorizeController {
         String accessToken = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(accessToken);
         //System.out.println("得到的user是："+githubUser);
-        if (githubUser != null){
+        if (githubUser != null && githubUser.getId() != null){
             User user = new User();
             //将数据库中的user的token设置为uuid
             String token = UUID.randomUUID().toString();
             user.setToken(token);
             user.setName(githubUser.getName());
-            //以字符串形式存储账户id，因为以后可能要
+            //以字符串形式存储账户id，因为以后可能要添加别的平台
             user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
+            user.setGmtCreat(System.currentTimeMillis());
+            user.setGmtModified(user.getGmtCreat());
+            user.setAvatarUrl(githubUser.getAvatarUrl());
             //将user信息插入到数据库
             userMapper.insert(user);
             //登录成功，写cookie 和 session
-            response.addCookie(new Cookie("token",token));
+            Cookie cookie = new Cookie("token", token);
+            cookie.setPath("/");
+            response.addCookie(cookie);
             //request.getSession().setAttribute("githubUser",githubUser);
             return "redirect:/index";
         }else {

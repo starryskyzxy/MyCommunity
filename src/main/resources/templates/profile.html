@@ -7,15 +7,15 @@
     <link rel="stylesheet" th:href="@{/css/community.css}">
     <script type="application/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
     <script type="application/javascript" th:src="@{/bootstrap-3.3.7-dist/js/bootstrap.min.js}"></script>
-    <title>你是星空的社区</title>
+    <title th:text="${sectionName}"></title>
 </head>
 <body>
 
 <div th:replace="~{/commons/commons::topbar}"></div>
-<div class="container-fluid main">
+<div class="container-fluid main profile">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <h2><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>发现</h2>
+            <h2><span th:text="${sectionName}"></span></h2>
             <hr/>
             <div class="media" th:each="qDTO:${pageDTO.questionDTOList}">
                 <div class="media-left">
@@ -33,23 +33,23 @@
                 <div class="mylimit col-lg-6 col-md-12 col-xs-12">
                     <ul class="pagination">
                         <li th:if="${pageDTO.showFirstPage}">
-                            <a th:href="@{/(page=1)}" aria-label="Previous">
+                            <a th:href="@{/profile/${section}(page=1)}" aria-label="Previous">
                                 <span aria-hidden="true">首页</span>
                             </a>
                         </li>
                         <li th:if="${pageDTO.showPrevious}">
-                            <a th:href="@{/(page=${pageDTO.currentPage}-1)}" aria-label="Previous">
+                            <a th:href="@{/profile/${section}(page=${pageDTO.currentPage}-1)}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li th:each="page:${pageDTO.pages}" th:class="${pageDTO.currentPage == page ? 'active' :'disbled' }"><a th:href="@{/(page=${page})}" th:text="${page}"></a></li>
+                        <li th:each="page:${pageDTO.pages}" th:class="${pageDTO.currentPage == page ? 'active':'disbled' }"><a th:href="@{/profile/${section}(page=${page})}" th:text="${page}"></a></li>
                         <li th:if="${pageDTO.showNext}">
-                            <a th:href="@{/(page=${pageDTO.currentPage}+1)}" aria-label="Next">
+                            <a th:href="@{/profile/${section}(page=${pageDTO.currentPage}+1)}" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
                         <li th:if="${pageDTO.showEndPage}">
-                            <a th:href="@{/(page=${pageDTO.totalPage})}" aria-label="Next">
+                            <a th:href="@{/profile/${section}(page=${pageDTO.totalPage})}" aria-label="Next">
                                 <span aria-hidden="true">尾页</span>
                             </a>
                         </li>
@@ -58,7 +58,13 @@
             </nav>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-            <h3>热门话题</h3>
+            <div class="list-group section">
+                <a th:href="@{/profile/questions}" th:class="${section=='questions'}?'active list-group-item':'list-group-item'">我的问题</a>
+                <a th:href="@{/ profile/repies}" th:class="${section=='repies'?'active list-group-item':'list-group-item'}">
+                    最新回复
+                    <span class="badge">14</span>
+                </a>
+            </div>
         </div>
     </div>
 </div>

@@ -6,11 +6,15 @@
     <cache/>
 
     <insert id="insert" parameterType="com.zxy.model.User">
-      insert into community.user (account_id, name, token, gmt_creat, gmt_modified)
-       values (#{accountId},#{name},#{token},#{gmtCreate},#{gmtModified})
+      insert into community.user (account_id, name, token, gmt_creat, gmt_modified, avatar_url)
+       values (#{accountId},#{name},#{token},#{gmtCreat},#{gmtModified},#{avatarUrl})
     </insert>
 
-    <select id="findByToken" resultType="com.zxy.model.User">
+    <select id="selectByToken" resultType="com.zxy.model.User">
         select * from community.user where token = #{token}
+    </select>
+
+    <select id="selectById" resultType="com.zxy.model.User">
+        select * from community.user where id = #{id}
     </select>
 </mapper>

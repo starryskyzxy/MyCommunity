@@ -11,5 +11,7 @@ public interface UserMapper {
 
     void insert(User user);
 
-    User findByToken(@Param("token") String token);
+    User selectByToken(@Param("token") String token);
+
+    User selectById(@Param("id") int id);
 }
