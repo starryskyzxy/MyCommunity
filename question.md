@@ -17,3 +17,14 @@ service层，当要完成的业务无法用单表单语句完成时，要添加s
 因为page的默认值为1，会大于totalpage，我的办法是，如果查询数量为0，那直接让分查询从0开始
 
 7.查询数据库时一定要注意查询值为空的情况
+
+8.当mapper查询的返回值为对象时，mapper.xml中必须要有结果类型，包装类型也需要
+
+9.开了二级缓存就算修改了数据也会复用上一次的查询结果
+
+10.如果没有在mapper接口上添加@mapper注解，为了将接口交由spring管理，必须另外在配置文件中
+声明或者在springboot启动类上添加@MapperScan("com.zxy.mapper")注解
+ps:加了@MapperScan还是不起作用，还要在mapper文件上添加@Repository
+
+11.使用mybatis-generator时要在jdbcConnection标签下加入<property name="nullCatalogMeansCurrent" value="true"/>
+防止生成的实体类和数据库不匹配

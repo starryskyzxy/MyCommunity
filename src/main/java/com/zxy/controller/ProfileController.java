@@ -1,7 +1,6 @@
 package com.zxy.controller;
 
 import com.zxy.dto.PageDTO;
-import com.zxy.mapper.UserMapper;
 import com.zxy.model.User;
 import com.zxy.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;

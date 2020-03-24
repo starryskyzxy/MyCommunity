@@ -24,7 +24,9 @@
                     </a>
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading" th:text="${qDTO.question.title}"></h4>
+                    <h4 class="media-heading">
+                        <a th:text="${qDTO.question.title}" th:href="@{'/questions/'+${qDTO.question.id}}"></a>
+                    </h4>
                     <span th:text="${qDTO.question.description}"></span>
                     <p class="question-desc"><span th:text="${qDTO.question.commentCount}"></span>个回复·<span th:text="${qDTO.question.viewCount}"></span>次浏览·<span th:text="${#dates.format(qDTO.question.gmtCreate,'yyyy-MM-dd HH:mm:ss')}"></span></p>
                 </div>

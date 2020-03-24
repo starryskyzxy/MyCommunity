@@ -1,6 +1,6 @@
 package com.zxy.controller;
 
-import com.zxy.mapper.QuestionMapper;
+import com.zxy.dto.QuestionDTO;
 import com.zxy.model.Question;
 import com.zxy.model.User;
 import com.zxy.service.QuestionService;
@@ -8,20 +8,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Controller
 public class PublishController {
 
     @Autowired
-    private QuestionMapper questionMapper;
-
-    @Autowired
     private QuestionService questionService;
+
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable("id") Integer id,Model model){
+        QuestionDTO questionDTO = questionService.selectById(id);
+        Question question = questionDTO.getQuestion();
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescription());
+        model.addAttribute("tag",question.getTag());
+        model.addAttribute("id",question.getId());
+        return "publish";
+    }
 
     @GetMapping("/publish")
     public String goPublish(){
@@ -32,9 +40,11 @@ public class PublishController {
     public String publish(@RequestParam("title") String title,
                           @RequestParam("description") String description,
                           @RequestParam("tag") String tag,
+                          @RequestParam(value = "id",required = false) Integer id,
                           HttpServletRequest request,
-                          HttpSession session,
                           Model model){
+        System.out.println("描述为："+description);
+        System.out.println("标签为："+tag);
         model.addAttribute("title",title);
         model.addAttribute("description",description);
         model.addAttribute("tag",tag);
@@ -57,13 +67,11 @@ public class PublishController {
         }
         Question question = new Question();
         question.setTitle(title);
+        question.setId(id);
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(user.getId());
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
-        questionMapper.insert(question);
-        Integer endPage = questionService.selectEndPage((Integer) session.getAttribute("size"));
-        return "redirect:/index?page="+endPage;
+        questionService.createOrUpdate(question);
+        return "redirect:/index";
     }
 }

@@ -14,12 +14,12 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
-
-
     @GetMapping("/questions/{id}")
     public String question(@PathVariable("id") Integer id,
                            Model model){
         QuestionDTO questionDTO = questionService.selectById(id);
+        //累加阅读数
+        questionService.incView(id);
         model.addAttribute("questionDTO",questionDTO);
         return "question";
     }

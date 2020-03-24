@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxy.mapper.QuestionMapper">
+
+    <insert id="insert" parameterType="com.zxy.model.Question">
+        insert into community.question (title, description, gmt_create, gmt_modified, creator, tag)
+        values (#{title},#{description},#{gmtCreate},#{gmtModified},#{creator},#{tag})
+    </insert>
+
+    <select id="selectAll" resultType="com.zxy.model.Question">
+        select * from community.question
+    </select>
+
+    <select id="selectWithLimit" resultType="com.zxy.model.Question">
+        select * from community.question
+        order by  gmt_create desc
+        limit #{page} , #{size}
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        select count(*) from community.question
+    </select>
+
+    <select id="selectUserQuestion"  resultType="com.zxy.model.Question">
+        select * from community.question where creator = #{userId} limit #{offset},#{size}
+    </select>
+
+    <select id="countByUserId" resultType="java.lang.Integer">
+        select count(*) from community.question where creator = #{userId}
+    </select>
+
+    <select id="selectById" resultType="com.zxy.model.Question">
+        select * from community.question where id = #{id}
+    </select>
+
+    <select id="selectCreatorById" resultType="java.lang.Integer">
+        select creator from community.question where id = #{id}
+    </select>
+
+    <select id="update">
+        update community.question
+        set title=#{title},description=#{description},gmt_modified=#{gmtModified},tag=#{tag}
+        where id = #{id}
+    </select>
+</mapper>

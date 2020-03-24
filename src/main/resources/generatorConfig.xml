@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<!--根节点-->
+<generatorConfiguration>
+
+    <!--配置数据库连接信息-->
+    <context id="context" targetRuntime="MyBatis3">
+        <!--添加分页插件-->
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/community?userUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true&amp;serverTimezone=UTC"
+                        userId="root"
+                        password="root">
+            <!--防止生成实体类和数据库不匹配-->
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
+        <!--自动将数据库的BigDecimal字段转换为Java的BigDecimal-->
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!--配置model对象.java文件生成的位置-->
+        <javaModelGenerator targetPackage="com.zxy.model" targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!--配置mapper.xml文件生成的位置-->
+        <sqlMapGenerator targetPackage="mybatis/mapper"  targetProject=".\src\main\resources\">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <!--配置dao接口生成的位置，路径一定要像这样.\src\main\java，我也不知道为什么-->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.zxy.mapper"  targetProject=".\src\main\java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <!--指定每个表的生成策略-->
+        <table tableName="user" domainObjectName="User" ></table>
+        <table tableName="question" domainObjectName="Question" ></table>
+
+    </context>
+</generatorConfiguration>
