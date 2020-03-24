@@ -33,8 +33,8 @@
           This element was generated on Tue Mar 24 09:50:01 CST 2020.
         -->
         update question
-        set view_count =view_count + #{record.viewCount,jdbcType=INTEGER}
-        where id = #{record.id}
+        set view_count =view_count + #{viewCount,jdbcType=INTEGER}
+        where id = #{id}
     </update>
 
 </mapper>
