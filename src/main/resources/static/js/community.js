@@ -1,3 +1,4 @@
+//添加一级评论和刷新页面
 function postComment() {
     let questionId = $("#question-id").val();
     let content = $("#comment_content").val();
@@ -39,4 +40,21 @@ function postComment() {
     });
     console.log(questionId);
     console.log(content);
+}
+
+//二级评论
+function collapseComments(e) {
+    let dataId = e.getAttribute("data-id");
+    let collapse = e.getAttribute("data-collapse");
+    let comments = $("#comment-"+dataId);
+    if (collapse){
+        comments.removeClass("in");  //jquery
+        e.removeAttribute("data-collapse");
+        e.classList.remove("active"); //javascript
+    }else {
+        comments.addClass("in");
+        e.setAttribute("data-collapse","in");
+        e.classList.add("active");
+    }
+    console.log(dataId);
 }

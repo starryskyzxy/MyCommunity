@@ -35,4 +35,6 @@ public class QuestionController {
         model.addAttribute("commentDTOList",commentDTOList);
         return "question";
     }
+
+   
 }
