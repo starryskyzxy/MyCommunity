@@ -14,7 +14,7 @@ service层，当要完成的业务无法用单表单语句完成时，要添加s
 5.fastjson可以自动进行驼峰映射
 
 6.当question数据库中没有数据时，totalpage（总页数会为0），此时page>totalpage会出现问题，
-因为page的默认值为1，会大于totalpage，我的办法是，如果查询数量为0，那直接让分查询从0开始
+因为page的默认值为1，会大于totalpage，我的办法是，如果查询数量为0，那直接让分页查询从0开始
 
 7.查询数据库时一定要注意查询值为空的情况
 
@@ -28,3 +28,7 @@ ps:加了@MapperScan还是不起作用，还要在mapper文件上添加@Reposito
 
 11.使用mybatis-generator时要在jdbcConnection标签下加入<property name="nullCatalogMeansCurrent" value="true"/>
 防止生成的实体类和数据库不匹配
+
+12.当出现.StackOverflowError异常时，debug一下，看看是否方法循环调用了
+
+13.浏览器会缓存css文件和js文件，如果没有版本号就要用ctrl+f5手动刷新

@@ -2,6 +2,8 @@ package com.zxy.service;
 
 import com.zxy.dto.PageDTO;
 import com.zxy.dto.QuestionDTO;
+import com.zxy.exception.CustomizeErrorCode;
+import com.zxy.exception.CustomizeException;
 import com.zxy.mapper.QuestionExtMapper;
 import com.zxy.mapper.QuestionMapper;
 import com.zxy.mapper.UserMapper;
@@ -83,7 +85,7 @@ public class QuestionService {
         return page;
     }
 
-    public PageDTO selectWithLimit(Integer id,Integer page,Integer size){
+    public PageDTO selectWithLimit(Long id,Integer page,Integer size){
         QuestionExample questionExample = new QuestionExample();
         int count = (int)questionMapper.countByExample(questionExample);
         PageDTO pageDTO = new PageDTO();
@@ -111,11 +113,14 @@ public class QuestionService {
         return pageDTO;
     }
 
-    public QuestionDTO selectById(Integer id){
+    public QuestionDTO selectById(Long id){
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDTO questionDTO = new QuestionDTO();
         questionDTO.setQuestion(question);
-        Integer creator = question.getCreator();
+        Long creator = question.getCreator();
         UserExample userExample = new UserExample();
         userExample.createCriteria().andIdEqualTo(creator);
         List<User> users = userMapper.selectByExample(userExample);
@@ -132,11 +137,14 @@ public class QuestionService {
             question.setGmtModified(System.currentTimeMillis());
             QuestionExample questionExample = new QuestionExample();
             questionExample.createCriteria().andIdEqualTo(question.getId());
-            questionMapper.updateByExampleSelective(question,questionExample);
+            int i = questionMapper.updateByExampleSelective(question, questionExample);
+            if (i != 1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
     }
 
-    public void incView(Integer id) {
+    public void incView(Long id) {
         Question question = new Question();
         question.setId(id);
         //递增的步长

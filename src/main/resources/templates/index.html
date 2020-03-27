@@ -10,7 +10,16 @@
     <title>你是星空的社区</title>
 </head>
 <body>
-
+<script type="application/javascript">
+    window.onload = function () {
+        let closeable = window.localStorage.getItem("closeable");
+        if (closeable == "true"){
+            //作用是关闭浏览器窗口
+            window.close();
+            window.localStorage.removeItem("closable");
+        }
+    }
+</script>
 <div th:replace="~{/commons/commons::topbar}"></div>
 <div class="container-fluid main">
     <div class="row">

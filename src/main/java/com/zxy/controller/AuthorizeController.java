@@ -2,7 +2,6 @@ package com.zxy.controller;
 
 import com.zxy.dto.AccessTokenDTO;
 import com.zxy.dto.GithubUser;
-import com.zxy.mapper.UserMapper;
 import com.zxy.model.User;
 import com.zxy.provider.GithubProvider;
 import com.zxy.service.UserService;
@@ -25,9 +24,6 @@ public class AuthorizeController {
 
     @Autowired
     private GithubProvider githubProvider;
-
-    @Autowired
-    private UserMapper userMapper;
 
     @Value("${github.client.id}")
     private String clientId;
@@ -73,10 +69,11 @@ public class AuthorizeController {
         }
     }
 
+    //退出登录，退出时将cookie和session去除
     @GetMapping("/logout")
     public String logout(HttpServletRequest request,
                          HttpServletResponse response){
-        request.getSession().removeAttribute("githubUser");
+        request.getSession().invalidate();
         Cookie cookie = new Cookie("token", null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);

@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8" >
     <link th:href="@{/bootstrap-3.3.7-dist/css/bootstrap.min.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css}">
     <link rel="stylesheet" th:href="@{/css/community.css}">
+    <link rel="stylesheet" th:href="@{/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css}">
     <script type="application/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
     <script type="application/javascript" th:src="@{/bootstrap-3.3.7-dist/js/bootstrap.min.js}"></script>
+    <script type="application/javascript" th:src="@{/js/community.js}"></script>
     <title th:text="${questionDTO.question.title}"></title>
 </head>
 <body>
@@ -14,27 +15,73 @@
 <div th:replace="~{/commons/commons::topbar}"></div>
 <div class="container-fluid main profile">
     <div class="row">
+        <!--主要内容-->
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <h3><span th:text="${questionDTO.question.title}"></span></h3>
-            <p class="question-desc">
-                作者：<span th:text="${questionDTO.user.name}"></span>&nbsp;&nbsp;&nbsp;
-                <span th:text="${questionDTO.question.commentCount}"></span>
-                个回复&nbsp;·&nbsp;<span th:text="${questionDTO.question.viewCount}"></span>
-                次浏览&nbsp;·&nbsp;<span th:text="${#dates.format(questionDTO.question.gmtModified,'yyyy-MM-dd HH:mm:ss')}"></span>
-            </p>
-            <hr/>
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${questionDTO.question.description}">
+            <!--正文-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h4 class="question-title"><span th:text="${questionDTO.question.title}"></span></h4>
+                <p class="question-desc">
+                    作者：<span th:text="${questionDTO.user.name}"></span>&nbsp;&nbsp;&nbsp;
+                    <span th:text="${questionDTO.question.commentCount}"></span>
+                    个回复&nbsp;·&nbsp;<span th:text="${questionDTO.question.viewCount}"></span>
+                    次浏览&nbsp;·&nbsp;<span th:text="${#dates.format(questionDTO.question.gmtModified,'yyyy-MM-dd HH:mm:ss')}"></span>
+                </p>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${questionDTO.question.description}">
 
+                </div>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
+                <a th:if="${session.githubUser != null && session.githubUser.id == questionDTO.user.id}" th:href="@{'/publish/'+${questionDTO.question.id}}" class="community-menu">
+                    <span class="glyphicon glyphicon-pencil" aria-hidden="true">编辑</span>
+                </a>
             </div>
+            <!--回复-->
+            <h4 >
+                <span th:text="${questionDTO.question.commentCount}"></span> 个回复
+            </h4>
+            <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp" />
+            <!--回复内容-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="media-left comments col-lg-12 col-md-12 col-sm-12 col-xs-12" th:each="commentDTO:${commentDTOList}">
+                    <a href="#">
+                        <img th:src="${commentDTO.user.avatarUrl}" alt="..." class="img-circle">
+                    </a>&nbsp;&nbsp;&nbsp;
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <h5>
+                            <span th:text="${commentDTO.user.name}"></span>
+                        </h5>
+                        <div th:text="${commentDTO.comment.content}"></div>
+                        <div class="menu col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <span class="glyphicon glyphicon-thumbs-up icon"></span>
+                            <span class="glyphicon glyphicon-comment icon"></span>
+                            <span style="float:right;" th:text="${#dates.format(questionDTO.question.gmtModified,'yyyy-MM-dd')}"></span>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse in">
+                            二级评论
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--回复输入框-->
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
-            <a th:if="${session.githubUser != null && session.githubUser.id == questionDTO.user.id}" th:href="@{'/publish/'+${questionDTO.question.id}}" class="community-menu">
-                <span class="glyphicon glyphicon-pencil" aria-hidden="true">编辑</span>
-            </a>
-            </span>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="comment_section">
+                <h4>提交回复</h4>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp"/>
+                <div class="media-left">
+                    <a href="#">
+                        <img th:src="${questionDTO.user.avatarUrl}" alt="..." class="img-circle">
+                    </a>&nbsp;&nbsp;&nbsp;
+                    <span th:text="${questionDTO.user.name}"></span>
+                </div>
+                <input type="hidden" id="question-id" th:value="${questionDTO.question.id}"/>
+                <textarea class="form-control comment" rows="6" id="comment_content"></textarea>
+                <button type="button" class="btn btn-success comment-btn" onclick="postComment()">回复</button>
+            </div>
         </div>
+        <!--右边内容-->
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <h4>发起人</h4>
+                <h4>提交回复</h4>
                 <div class="media-left">
                     <a href="#">
                         <img th:src="${questionDTO.user.avatarUrl}" alt="..." class="img-circle">
