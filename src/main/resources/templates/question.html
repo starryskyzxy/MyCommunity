@@ -8,6 +8,7 @@
     <script type="application/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
     <script type="application/javascript" th:src="@{/bootstrap-3.3.7-dist/js/bootstrap.min.js}"></script>
     <script type="application/javascript" th:src="@{/js/community.js}"></script>
+    <script type="application/javascript" th:src="@{/js/moment.js}"></script>
     <title th:text="${questionDTO.question.title}"></title>
 </head>
 <body>
@@ -27,8 +28,13 @@
                     次浏览&nbsp;·&nbsp;<span th:text="${#dates.format(questionDTO.question.gmtModified,'yyyy-MM-dd HH:mm:ss')}"></span>
                 </p>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${questionDTO.question.description}">
-
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:text="${questionDTO.question.description}"></div>
+                <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
+                <div>
+                <!--springEL可以使用split()切割字符串-->
+                <span class="label label-info" th:each="tag:${questionDTO.question.tag.split(',')}">
+                    <span class="label label-info" th:text="${tag}"></span>
+                </span>
                 </div>
                 <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
                 <a th:if="${session.githubUser != null && session.githubUser.id == questionDTO.user.id}" th:href="@{'/publish/'+${questionDTO.question.id}}" class="community-menu">
@@ -36,7 +42,7 @@
                 </a>
             </div>
             <!--回复-->
-            <h4 >
+            <h4>
                 <span th:text="${questionDTO.question.commentCount}"></span> 个回复
             </h4>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 comment-sp" />
@@ -54,28 +60,18 @@
                         <div class="menu col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <span class="glyphicon glyphicon-thumbs-up icon"></span>
                             <span class="glyphicon glyphicon-comment icon" th:data-id="${commentDTO.comment.id}" onclick="collapseComments(this)"></span>
+                            <span th:text="${commentDTO.comment.commentCount}"></span>
                             <span style="float:right;" th:text="${#dates.format(questionDTO.question.gmtModified,'yyyy-MM-dd')}"></span>
                         </div>
-                        <!--动态地生成id-->
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse sub-comments" th:id="${'comment-'+commentDTO.comment.id}">
-                            <!--二级评论-->
-                            <div class="media-left comments col-lg-12 col-md-12 col-sm-12 col-xs-12" th:each="commentDTO:${commentDTOList}">
-                                <a href="#">
-                                    <img th:src="${commentDTO.user.avatarUrl}" alt="..." class="img-circle">
-                                </a>&nbsp;&nbsp;&nbsp;
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                    <h5>
-                                        <span th:text="${commentDTO.user.name}"></span>
-                                    </h5>
-                                    <div th:text="${commentDTO.comment.content}"></div>
-                                    <div class="menu col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                        <span style="float:right;" th:text="${#dates.format(questionDTO.question.gmtModified,'yyyy-MM-dd')}"></span>
-                                    </div>
-                                    <!--动态地生成id-->
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse" th:id="${'comment-'+commentDTO.comment.id}">
-
-                                    </div>
-                                </div>
+                        <!--二级评论-->
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse sub-comments"
+                             th:id="${'comment-'+commentDTO.comment.id}">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <input type="text" class="form-control" placeholder="评论一下……"
+                                       th:id="${'input-'+commentDTO.comment.id}">
+                                <button type="button" class="btn btn-success pull-right" onclick="comment(this)"
+                                        th:data-id="${commentDTO.comment.id}">评论
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -111,6 +107,11 @@
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12"/>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <h4>相关问题</h4>
+                <ul class="question-related">
+                    <li th:each="related:${relatedQuestions}">
+                        <a th:href="@{'/question/'+${related.question.id}}" th:text="${related.question.title}"></a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

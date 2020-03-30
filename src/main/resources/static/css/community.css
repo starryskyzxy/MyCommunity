@@ -42,6 +42,7 @@ body{
     display: block;
     font-size: 13px;
     margin-bottom: 15px;
+    width: 50px;
 }
 
 .comment{
@@ -92,4 +93,21 @@ body{
     margin-top: 15px;
     padding: 15px;
     border-radius: 5px;
+    margin-bottom: 15px;
 }
+
+.sub-comments .btn{
+    margin-top: 10px;
+}
+
+.label-info{
+    margin-right: 10px;
+}
+
+.question-related{
+    list-style: none;
+    font-size: 15px;
+    line-height: 25px;
+    padding-left: 0px;
+}
+

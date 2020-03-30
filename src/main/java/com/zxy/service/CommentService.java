@@ -1,14 +1,10 @@
 package com.zxy.service;
 
-import com.zxy.dto.CommentCreateDTO;
 import com.zxy.dto.CommentDTO;
 import com.zxy.enums.CommentTypeEnum;
 import com.zxy.exception.CustomizeErrorCode;
 import com.zxy.exception.CustomizeException;
-import com.zxy.mapper.CommentMapper;
-import com.zxy.mapper.QuestionExtMapper;
-import com.zxy.mapper.QuestionMapper;
-import com.zxy.mapper.UserMapper;
+import com.zxy.mapper.*;
 import com.zxy.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +31,9 @@ public class CommentService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private CommentExtMapper commentExtMapper;
+
 
     @Transactional
     public void insert(Comment comment) {
@@ -51,7 +50,9 @@ public class CommentService {
             if (dbcomment == null){
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
+            dbcomment.setCommentCount(1);
             commentMapper.insert(comment);
+            commentExtMapper.incCommentCount(dbcomment);
         }else {
             //回复问题，判断要回复的问题是否存在
             Question dbquestion = questionMapper.selectByPrimaryKey(comment.getParentId());
@@ -65,11 +66,11 @@ public class CommentService {
     }
 
     //根据问题id查出回复列表,因为只是需要展示在问题下面，所以只需要查询到问题的回复
-    public List<CommentDTO> selectByQuestionId(Long id) {
+    public List<CommentDTO> selectByTargetId(Long id,CommentTypeEnum typeEnum) {
         CommentExample commentExample = new CommentExample();
         commentExample.createCriteria()
                 .andParentIdEqualTo(id)
-                .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+                .andTypeEqualTo(typeEnum.getType());
         commentExample.setOrderByClause("gmt_create desc"); //添加排序
         List<Comment> comments = commentMapper.selectByExample(commentExample);
         if (comments.size() == 0){

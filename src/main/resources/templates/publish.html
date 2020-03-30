@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/community.css}">
     <script type="application/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
     <script type="application/javascript" th:src="@{/bootstrap-3.3.7-dist/js/bootstrap.min.js}"></script>
+    <script type="application/javascript" th:src="@{/js/community.js}"></script>
     <title>发布-你是星空的社区</title>
 </head>
 <body>
@@ -21,7 +22,7 @@
                 <input name="id" type="hidden" th:value="${id}">
                 <div class="form-group">
                     <label for="title">问题标题（简单扼要）：</label>
-                    <input th:value="${title}" name="title" type="text" class="form-control" id="title" placeholder="问题标题。。。">
+                    <input th:value="${title}" name="title" type="text" class="form-control" id="title" placeholder="问题标题。。。" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="description">问题补充（必填，请参照右侧提示）：</label>
@@ -29,7 +30,30 @@
                 </div>
                 <div class="form-group">
                     <label for="tag">添加标签</label>
-                    <input th:value="${tag}" name="tag" type="text" class="form-control" id="tag" placeholder="输入标签，以,号分割">
+                    <input onclick="showSelectTag()" th:value="${tag}" name="tag" type="text" class="form-control" id="tag" placeholder="输入标签，以,号分割" autocomplete="off">
+                    <div id="select-tag" class="publish-tag-tab">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" th:each="selectCategory,selectCategoryStat: ${tags}"
+                                th:class="${selectCategoryStat.first ? 'active':''}">
+                                <a th:href="${'#'+selectCategory.categoryName}" aria-controls="home" role="tab"
+                                   data-toggle="tab" th:text="${selectCategory.categoryName}"></a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" th:id="${selectCategory.categoryName}"
+                                 th:each="selectCategory: ${tags}"
+                                 th:class="${selectCategoryStat.first ? 'active tab-pane':'tab-pane'}">
+                                <span>
+                                    <span th:each="selectTag: ${selectCategory.tags}">
+                                    <span class="community-tag" onclick="selectTag(this)"
+                                          th:data-tag="${selectTag}"
+                                          th:text="${' '+selectTag}">
+                                    </span>
+                                </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="container-fluid main">
                     <div class="row">

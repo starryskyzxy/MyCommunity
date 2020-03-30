@@ -11,12 +11,15 @@ import com.zxy.model.Question;
 import com.zxy.model.QuestionExample;
 import com.zxy.model.User;
 import com.zxy.model.UserExample;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -56,7 +59,9 @@ public class QuestionService {
         if (count == 0){
             offset = 0;
         }
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_create desc");
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
         for (Question question : questions) {
             UserExample userExample = new UserExample();
             userExample.createCriteria().andIdEqualTo(question.getCreator());
@@ -132,6 +137,9 @@ public class QuestionService {
         if (question.getId() == null){
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
+            question.setCommentCount(0);
+            question.setLikeCount(0);
+            question.setViewCount(0);
             questionMapper.insertSelective(question);
         }else {
             question.setGmtModified(System.currentTimeMillis());
@@ -150,5 +158,25 @@ public class QuestionService {
         //递增的步长
         question.setViewCount(1);
         questionExtMapper.incView(question);
+    }
+
+    //查找相关问题
+    public List<QuestionDTO> selectRelated(QuestionDTO questionDTO){
+        String tagStr = questionDTO.getQuestion().getTag();
+        //判断问题标签是否为空
+        if (StringUtils.isBlank(tagStr)){
+            return new ArrayList<>();
+        }
+        String[] tags = StringUtils.split(tagStr, ",");
+        String regexpTag = Arrays.stream(tags).collect(Collectors.joining("|"));
+        Question question = new Question();
+        question.setTag(regexpTag);
+        List<Question> questions = questionExtMapper.selectRelated(question);
+        List<QuestionDTO> questionDTOS = questions.stream().map(q -> {
+            QuestionDTO questionDTO1 = new QuestionDTO();
+            questionDTO1.setQuestion(q);
+            return questionDTO1;
+        }).collect(Collectors.toList());
+        return questionDTOS;
     }
 }

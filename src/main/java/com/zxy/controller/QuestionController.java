@@ -3,6 +3,7 @@ package com.zxy.controller;
 import com.zxy.dto.CommentCreateDTO;
 import com.zxy.dto.CommentDTO;
 import com.zxy.dto.QuestionDTO;
+import com.zxy.enums.CommentTypeEnum;
 import com.zxy.service.CommentService;
 import com.zxy.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,14 @@ public class QuestionController {
     @RequestMapping("/questions/{id}")
     public String question(@PathVariable("id") Long id, Model model){
         QuestionDTO questionDTO = questionService.selectById(id);
-
-        List<CommentDTO> commentDTOList = commentService.selectByQuestionId(id);
+        List<CommentDTO> commentDTOList = commentService.selectByTargetId(id, CommentTypeEnum.QUESTION);
+        List<QuestionDTO> relatedQuestions = questionService.selectRelated(questionDTO);
 
         //累加阅读数
         questionService.incView(id);
         model.addAttribute("questionDTO",questionDTO);
         model.addAttribute("commentDTOList",commentDTOList);
+        model.addAttribute("relatedQuestions",relatedQuestions);
         return "question";
     }
 

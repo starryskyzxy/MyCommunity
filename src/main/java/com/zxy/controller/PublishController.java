@@ -1,5 +1,6 @@
 package com.zxy.controller;
 
+import com.zxy.cache.TagCache;
 import com.zxy.dto.QuestionDTO;
 import com.zxy.model.Question;
 import com.zxy.model.User;
@@ -23,11 +24,13 @@ public class PublishController {
     @GetMapping("/publish/{id}")
     public String edit(@PathVariable("id") Long id,Model model){
         QuestionDTO questionDTO = questionService.selectById(id);
+        System.out.println("controller查出来的："+questionDTO.getQuestion().getTag());
         Question question = questionDTO.getQuestion();
         model.addAttribute("title",question.getTitle());
         model.addAttribute("description",question.getDescription());
         model.addAttribute("tag",question.getTag());
         model.addAttribute("id",question.getId());
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
 
